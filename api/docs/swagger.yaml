@@ -1,0 +1,34 @@
+info:
+  contact: {}
+paths:
+  /healthz:
+    get:
+      consumes:
+      - application/json
+      description: used by Kubernetes liveness probe
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Liveness check
+      tags:
+      - Kubernetes
+  /readyz:
+    get:
+      consumes:
+      - application/json
+      description: used by Kubernetes readiness probe
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Readiness check
+      tags:
+      - Kubernetes
+swagger: "2.0"
