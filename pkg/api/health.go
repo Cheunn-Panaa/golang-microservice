@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"sync/atomic"
 )
 
 // Healthz godoc
@@ -12,7 +13,11 @@ import (
 // @Produce json
 // @Router /healthz [get]
 // @Success 200 {string} string "OK"
-func Healthz(w http.ResponseWriter, _ *http.Request) {
+func (s *Server) Healthz(w http.ResponseWriter, r *http.Request) {
+	if atomic.LoadInt32(&healthy) == 1 {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -24,11 +29,10 @@ func Healthz(w http.ResponseWriter, _ *http.Request) {
 // @Produce json
 // @Router /readyz [get]
 // @Success 200 {string} string "OK"
-func Readyz(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	//if atomic.LoadInt32(&ready) == 1 {
-	//	w.WriteHeader(http.StatusOK)
-	//	return
-	//}
-	//w.WriteHeader(http.StatusServiceUnavailable)
+func (s *Server) Readyz(w http.ResponseWriter, r *http.Request) {
+	if atomic.LoadInt32(&ready) == 1 {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	w.WriteHeader(http.StatusServiceUnavailable)
 }
